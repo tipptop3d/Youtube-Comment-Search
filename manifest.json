@@ -1,0 +1,23 @@
+{
+  "name": "Youtube Comment Search",
+  "description": "Adds a Button to youtube videos for filtering comments",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.youtube.com/watch*"
+      ],
+      "css": [
+        "youtube-inject.css"
+      ],
+      "js": [
+        "src/content-scripts/youtube-content-script.js"
+      ],
+      "run_at" : "document_idle"
+    }
+  ]
+}

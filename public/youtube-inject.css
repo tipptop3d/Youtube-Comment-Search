@@ -1,0 +1,8 @@
+#comment-filter.ytd-comments-header-renderer {
+  margin-left: 32px;
+  margin-right: 8px;
+}
+
+#comment-filter.ytd-comments-header-renderer > div {
+  height: 100%;
+}
