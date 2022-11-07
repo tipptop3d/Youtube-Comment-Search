@@ -1,19 +1,22 @@
 <template>
- <YtComment v-for="comment in props.comments"></YtComment>
+  <YtComment v-for="thread in filteredThreads" :data="thread"></YtComment>
 </template>
 
 <script setup>
-import YtComment from './YtComment.vue'
+import { inject, watch } from 'vue';
+import YtComment from './YtCommentThread.vue'
 
-const props = defineProps({
-  comments: Array({
-    userName: String,
-    authorId: String,
-    authorThumbnail: String,
-    content: String,
-    likeCount: Number,
-    timeStamp: Date
-  })
+console.log('Section', inject('filteredThreads'))
+const { filteredThreads, } = inject('filteredThreads')
+
+const contents = document.body.querySelector('#comments>#sections>#contents')
+
+watch(filteredThreads, (newValue) => {
+  if (newValue.length == 0) {
+    contents.style.display = 'block'
+  } else {
+    contents.style.display = 'none'
+  }
 })
 </script>
 
