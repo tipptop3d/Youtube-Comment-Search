@@ -37,6 +37,7 @@ function handleSubmit() {
 	getData()
 		.then(data => {
 			const commentThreads = data.items
+			console.log(commentThreads)
 			updateThreads(commentThreads)
 		})
 		.catch(error => {

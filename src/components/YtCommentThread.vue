@@ -14,7 +14,7 @@
           {{ timeAgo }} (edited {{ updatedAt }})
         </a>
       </div>
-      <div class="ycs-comment-content" ref="contentElement" v-html="text">
+      <div class="ycs-comment-content" ref="contentElement">
       </div>
       <div class="ycs-toolbar">
         <div class="ycs-icon-container">
@@ -33,6 +33,7 @@
 import { onMounted, ref } from 'vue'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import 'dayjs/locale/de'
 
 import YtLikeIcon from './yt-icons/YtLikeIcon.vue'
 dayjs.extend(relativeTime)
@@ -48,26 +49,30 @@ const topLvlCommentId = props.data.snippet.topLevelComment.id
 const topLvlComment = props.data.snippet.topLevelComment.snippet
 const timeAgo = dayjs(topLvlComment.publishedAt).fromNow()
 
-const timeLinkRegExp = /\<a href="https:\/\/www\.youtube\.com\/watch\?v=(.*?)&amp;t=(.*?)".*?>(.*?)<\/a>/g
-const text = topLvlComment.textDisplay.replaceAll(timeLinkRegExp, '<a class="yt-simple-endpoint style-scope yt-formatted-string ycs-time-link" href="/watch?v=$1&t=$2" data-time-link="$2">$3</a>')
-console.log(text)
+const hmsToSeconds = ({h, m, s}) => {
+  return +(h ?? 0) * 3600 + +(m ?? 0) * 60 + +(s ?? 0)
+}
 
-onMounted(() => {
-  const links = contentElement.value.querySelectorAll('.ycs-time-link')
-  console.log('Test', links)
-  links.forEach(element => {
-    element.addEventListener('click', (event) => {
-      const player = document.querySelector("#movie_player > div.html5-video-container > video")
-      const timeArray = element.dataset.timeLink.split(/[hms]/).slice(0, -1).map(Number)
-      console.log(timeArray)
-      var timeInSeconds = 0
-      timeArray.reverse().forEach((unit, exp) => {
-        timeInSeconds += unit * 60 ** exp
-      });
-      player.currentTime = timeInSeconds
+const timeRegExp = /t=(?:(?<h>\d+)h)?(?:(?<m>\d+)m)?(?:(?<s>\d+)s)?/
+const textElement = document.createElement('div')
+textElement.innerHTML = topLvlComment.textDisplay
+textElement.querySelectorAll('a').forEach(node => {
+  node.classList.add('yt-simple-endpoint', 'style-scope', 'yt-formatted-string')
+  let match = node.href.match(timeRegExp)
+  if (node.href.includes(`v=${videoId}`) && match) {
+    console.log(match.groups)
+    node.setAttribute('data-time', hmsToSeconds(match.groups))
+    node.addEventListener('click', event => {
+      console.log('click!!')
+      const player = document.querySelector('#movie_player > div.html5-video-container > video')
+      player.currentTime = +event.currentTarget.dataset.time
       event.preventDefault()
     })
-  });
+  }
+})
+
+onMounted(() => {
+  contentElement.value.append(textElement)
 })
 
 </script>
