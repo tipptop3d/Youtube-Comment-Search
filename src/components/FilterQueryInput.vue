@@ -10,17 +10,18 @@
 <script setup>
 import { ref, inject, computed } from 'vue'
 
-var debug = true
+const debug = ref(true)
 const videoIdExp = RegExp(/youtu(?:.*\/v\/|.*v=|\.be\/)([A-Za-z0-9_-]{11})/);
 const videoId = window.location.href.match(videoIdExp)[1]
 const searchQuery = ref('')
 const { _, updateThreads } = inject('filteredThreads')
 
 const domain = computed(() => {
-	return (debug ? 'http://localhost:8080' : 'https://ytc-backend.onrender.com') + '/comments?'
+	return (debug.value ? 'http://localhost:8080' : 'https://ytc-backend.onrender.com') + '/comments?'
 })
 
 async function getData() {
+	console.log(domain.value)
 	const response = await fetch(domain.value + new URLSearchParams({
 		videoId: videoId,
 		filter: searchQuery.value

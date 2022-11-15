@@ -9,7 +9,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://*.youtube.com/watch*"
+        "https://*.youtube.com/*"
       ],
       "css": [
         "youtube-inject.css"
@@ -17,7 +17,7 @@
       "js": [
         "src/content-scripts/youtube-content-script.js"
       ],
-      "run_at" : "document_idle"
+      "run_at": "document_idle"
     }
   ]
 }

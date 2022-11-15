@@ -49,7 +49,7 @@ const topLvlCommentId = props.data.snippet.topLevelComment.id
 const topLvlComment = props.data.snippet.topLevelComment.snippet
 const timeAgo = dayjs(topLvlComment.publishedAt).fromNow()
 
-const hmsToSeconds = ({h, m, s}) => {
+const hmsToSeconds = ({ h, m, s }) => {
   return +(h ?? 0) * 3600 + +(m ?? 0) * 60 + +(s ?? 0)
 }
 
@@ -60,10 +60,8 @@ textElement.querySelectorAll('a').forEach(node => {
   node.classList.add('yt-simple-endpoint', 'style-scope', 'yt-formatted-string')
   let match = node.href.match(timeRegExp)
   if (node.href.includes(`v=${videoId}`) && match) {
-    console.log(match.groups)
     node.setAttribute('data-time', hmsToSeconds(match.groups))
     node.addEventListener('click', event => {
-      console.log('click!!')
       const player = document.querySelector('#movie_player > div.html5-video-container > video')
       player.currentTime = +event.currentTarget.dataset.time
       event.preventDefault()
